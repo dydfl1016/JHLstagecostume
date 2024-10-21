@@ -17,39 +17,39 @@ for (let i = 1; i <= totalImages; i++) {
 
 // 초기화 함수: 이미지 업데이트
 function updateImages() {
-    img1.src = images[currentRound * 2];
-    img2.src = images[currentRound * 2 + 1];
-
-    img1.alt = `이준호 의상 ${currentRound * 2 + 1}`;
-    img2.alt = `이준호 의상 ${currentRound * 2 + 2}`;
+    if (images.length > 1) {
+        // 다음 라운드 이미지를 업데이트
+        img1.src = images[currentRound];
+        img2.src = images[currentRound + 1];
+        img1.alt = `이준호 의상 ${currentRound + 1}`;
+        img2.alt = `이준호 의상 ${currentRound + 2}`;
+    } else {
+        showResults();  // 최종 우승자가 남으면 결과 출력
+    }
 }
 
 // 선택한 이미지를 다음 라운드로 보내는 함수
 function chooseImage(choice) {
     const chosenImage = choice === 1 ? img1.src : img2.src;
     selectedImages.push(chosenImage);
-    currentRound++;
 
-    if (currentRound * 2 < images.length) {
-        updateImages();
-    } else {
-        // 라운드가 끝났으면 다음 라운드를 위해 초기화
-        if (selectedImages.length > 1) {
-            images = selectedImages;  // 선택된 이미지들로 새 토너먼트 시작
-            selectedImages = [];
-            currentRound = 0;
-            updateImages();
-        } else {
-            showResults();  // 최종 우승자 발표
-        }
+    currentRound += 2;
+
+    if (currentRound >= images.length) {
+        // 한 라운드가 끝나면 선택된 이미지들로 다음 라운드를 시작
+        images = selectedImages;
+        selectedImages = [];
+        currentRound = 0;
     }
+
+    updateImages();  // 다음 라운드로 이미지 업데이트
 }
 
 // 결과를 보여주는 함수 (최종 우승 의상)
 function showResults() {
     document.getElementById('game-container').innerHTML = `
         <h2>최종 우승!</h2>
-        <img src="${selectedImages[0]}" alt="최종 우승 의상">
+        <img src="${images[0]}" alt="최종 우승 의상">
     `;
     btnChoose1.style.display = 'none';
     btnChoose2.style.display = 'none';
